@@ -14,6 +14,7 @@ import { getParams, request } from '../../../globalLib';
 import PropTypes from 'prop-types';
 import ShowTools from './ShowTools';
 import { generateUrl } from '../../../utils/nacosutil';
+
 const { Row, Col } = Grid;
 
 @ConfigProvider.config
@@ -69,8 +70,6 @@ class McpDetail extends React.Component {
         serverConfig: result.data,
       });
     }
-
-    console.log(result.data);
   };
 
   getFormItem = params => {
