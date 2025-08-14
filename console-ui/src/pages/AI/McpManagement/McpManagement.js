@@ -38,6 +38,7 @@ import RegionGroup from 'components/RegionGroup';
 import ShowCodeing from 'components/ShowCodeing';
 import DeleteDialog from 'components/DeleteDialog';
 import DashboardCard from './DashboardCard';
+import ImportMcpDialog from './ImportMcpDialog';
 import { getParams, request, setParams } from '@/globalLib';
 import { goLogin } from '../../../globalLib';
 import { connect } from 'react-redux';
@@ -127,6 +128,8 @@ class McpManagement extends React.Component {
       defaultFuzzySearch: true,
       // ensure mcpName is controlled and initialized from query params
       mcpName: this.mcpName || '',
+      // Import dialog state
+      importDialogVisible: false,
     };
     const obj = {
       dataId: this.dataId || '',
@@ -532,6 +535,22 @@ class McpManagement extends React.Component {
     }
   };
 
+  // Handle import dialog
+  handleImportDialogOpen = () => {
+    this.setState({ importDialogVisible: true });
+  };
+
+  handleImportDialogClose = () => {
+    this.setState({ importDialogVisible: false });
+  };
+
+  handleImportSuccess = importedServers => {
+    const { locale = {} } = this.props;
+    // Refresh the data after successful import
+    this.getData();
+    Message.success(locale.importSuccess || 'Import Success');
+  };
+
   configDataTableOnChange = (ids, records) => {
     this.setState({
       selectedRowKeys: ids,
@@ -545,6 +564,12 @@ class McpManagement extends React.Component {
     return (
       <>
         <BatchHandle ref={ref => (this.batchHandle = ref)} />
+        <ImportMcpDialog
+          visible={this.state.importDialogVisible}
+          onCancel={this.handleImportDialogClose}
+          onImportSuccess={this.handleImportSuccess}
+          locale={locale}
+        />
         <div className={this.state.hasdash ? 'dash-page-container' : ''}>
           <div
             className={this.state.hasdash ? 'dash-left-container' : ''}
@@ -576,6 +601,11 @@ class McpManagement extends React.Component {
                 <Form.Item>
                   <Button type="primary" onClick={this.chooseEnv.bind(this)}>
                     {locale.addNewMcpServer}
+                  </Button>
+                </Form.Item>
+                <Form.Item>
+                  <Button style={{ marginLeft: 10 }} onClick={this.handleImportDialogOpen}>
+                    {locale.importMcpServer}
                   </Button>
                 </Form.Item>
                 <Form.Item label="Server Name">

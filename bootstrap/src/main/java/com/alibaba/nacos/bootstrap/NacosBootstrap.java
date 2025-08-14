@@ -57,6 +57,7 @@ public class NacosBootstrap {
                 startWithoutConsole(args);
                 break;
             case CONSOLE:
+            
                 startOnlyConsole(args);
                 break;
             default:

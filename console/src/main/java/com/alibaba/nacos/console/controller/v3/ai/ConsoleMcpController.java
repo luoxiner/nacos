@@ -70,6 +70,8 @@ import static com.alibaba.nacos.api.ai.constant.AiConstants.Mcp.MCP_PROTOCOL_SSE
 @ExtractorManager.Extractor(httpExtractor = McpHttpParamExtractor.class)
 public class ConsoleMcpController {
     
+    private static final int HTTP_OK = 200;
+    
     private final McpProxy mcpProxy;
     
     public ConsoleMcpController(McpProxy mcpProxy) {
@@ -196,6 +198,48 @@ public class ConsoleMcpController {
         mcpForm.validate();
         mcpProxy.deleteMcpServer(mcpForm.getNamespaceId(), mcpForm.getMcpName(), mcpForm.getMcpId(), mcpForm.getVersion());
         return Result.success("ok");
+    }
+    
+    /**
+     * Get MCP servers from Public Nacos Registry.
+     *
+     * @param limit  the maximum number of servers to return (default: 20)
+     * @param offset the number of servers to skip (default: 0)
+     * @return MCP server list from Public Nacos Registry
+     * @throws NacosException any exception during handling
+     */
+    @GetMapping("/public-registry")
+    @Secured(action = ActionTypes.READ, signType = SignType.AI, apiType = ApiType.CONSOLE_API)
+    public Result<String> getPublicMcpServers(
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset) throws NacosException {
+        try {
+            java.net.http.HttpClient client = java.net.http.HttpClient.newBuilder()
+                    .connectTimeout(Duration.ofSeconds(10))
+                    .build();
+            
+            String url = String.format("https://mcp.nacos.io/api/server?sort=desc&sortBy=createdAt&limit=%d&offset=%d", 
+                    limit, offset);
+            java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(url))
+                    .timeout(Duration.ofSeconds(30))
+                    .GET()
+                    .build();
+            
+            java.net.http.HttpResponse<String> response = client.send(request, 
+                    java.net.http.HttpResponse.BodyHandlers.ofString());
+            
+            if (response.statusCode() == HTTP_OK) {
+                return Result.success(response.body());
+            } else {
+                return Result.failure(ErrorCode.SERVER_ERROR.getCode(), 
+                        "Failed to fetch MCP servers from Public Registry: HTTP " + response.statusCode(), 
+                        null);
+            }
+        } catch (Exception e) {
+            throw new NacosException(NacosException.SERVER_ERROR, 
+                    "Failed to fetch MCP servers from Public Nacos Registry", e);
+        }
     }
     
 }
