@@ -16,6 +16,8 @@
 
 package com.alibaba.nacos.ai.form.a2a.admin;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.io.Serial;
 
 /**
@@ -23,11 +25,13 @@ import java.io.Serial;
  *
  * @author xiweng.yy
  */
+@Schema(description = "Agent card update form for updating agent information")
 public class AgentCardUpdateForm extends AgentCardForm {
     
     @Serial
     private static final long serialVersionUID = 353698557363707304L;
     
+    @Schema(description = "Whether to set this version as the latest version", example = "true", defaultValue = "false")
     private boolean setAsLatest;
     
     public boolean getSetAsLatest() {

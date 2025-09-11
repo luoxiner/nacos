@@ -22,6 +22,7 @@ import com.alibaba.nacos.api.exception.api.NacosApiException;
 import com.alibaba.nacos.api.model.NacosForm;
 import com.alibaba.nacos.api.model.v2.ErrorCode;
 import com.alibaba.nacos.common.utils.StringUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serial;
 import java.util.Objects;
@@ -33,17 +34,22 @@ import static com.alibaba.nacos.api.ai.constant.AiConstants.A2a.A2A_DEFAULT_NAME
  *
  * @author KiteSoar
  **/
+@Schema(description = "Agent form for basic agent operations")
 public class AgentForm implements NacosForm {
     
     @Serial
     private static final long serialVersionUID = -73912927386186928L;
     
+    @Schema(description = "Namespace ID of the agent", example = "default", defaultValue = "default")
     private String namespaceId;
     
+    @Schema(description = "Name of the agent", example = "my-agent", required = true)
     private String agentName;
     
+    @Schema(description = "Version of the agent", example = "1.0.0")
     private String version;
     
+    @Schema(description = "Registration type (url or service)", example = "url", allowableValues = {"url", "service"})
     private String registrationType;
     
     @Override

@@ -20,6 +20,7 @@ package com.alibaba.nacos.ai.form.a2a.admin;
 import com.alibaba.nacos.ai.constant.Constants;
 import com.alibaba.nacos.api.exception.api.NacosApiException;
 import com.alibaba.nacos.api.model.v2.ErrorCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serial;
 import java.util.Objects;
@@ -29,11 +30,15 @@ import java.util.Objects;
  *
  * @author KiteSoar
  */
+@Schema(description = "Agent list form for searching and filtering agents")
 public class AgentListForm extends AgentForm {
     
     @Serial
     private static final long serialVersionUID = 4706219418699928980L;
     
+    @Schema(description = "Search type - 'accurate' for exact match, 'blur' for fuzzy search", 
+            example = "accurate", 
+            allowableValues = {"accurate", "blur"})
     private String search;
     
     @Override

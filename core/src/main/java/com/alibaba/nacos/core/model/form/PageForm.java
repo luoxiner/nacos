@@ -19,6 +19,7 @@ package com.alibaba.nacos.core.model.form;
 import com.alibaba.nacos.api.exception.api.NacosApiException;
 import com.alibaba.nacos.api.model.NacosForm;
 import com.alibaba.nacos.api.model.v2.ErrorCode;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -26,12 +27,15 @@ import org.springframework.http.HttpStatus;
  *
  * @author xiweng.yy
  */
+@Schema(description = "Pagination form for listing operations")
 public class PageForm implements NacosForm {
     
     private static final long serialVersionUID = -8912131925234465033L;
     
+    @Schema(description = "Page number (starts from 1)", example = "1", minimum = "1", defaultValue = "1")
     private int pageNo = 1;
     
+    @Schema(description = "Number of items per page", example = "10", minimum = "1", maximum = "500", defaultValue = "100")
     private int pageSize = 100;
     
     @Override

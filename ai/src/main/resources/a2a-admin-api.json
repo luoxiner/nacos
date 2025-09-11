@@ -1,0 +1,833 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Nacos AI - A2A Admin API",
+    "description": "Nacos Agent-to-Agent (A2A) Admin Interface API documentation",
+    "contact": {
+      "name": "Nacos Team",
+      "url": "https://nacos.io",
+      "email": "nacos-dev@googlegroups.com"
+    },
+    "license": {
+      "name": "Apache License 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    "version": "3.1.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Default Server"
+    }
+  ],
+  "paths": {
+    "/v3/admin/ai/a2a": {
+      "get": {
+        "tags": [
+          "A2A Admin"
+        ],
+        "summary": "Get Agent Card",
+        "description": "Retrieve agent card information by name and version",
+        "operationId": "getAgentCard",
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "description": "Namespace ID of the agent",
+            "schema": {
+              "type": "string",
+              "default": "default"
+            }
+          },
+          {
+            "name": "agentName",
+            "in": "query",
+            "description": "Name of the agent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Version of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registrationType",
+            "in": "query",
+            "description": "Registration type (url or service)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "url",
+                "service"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent card retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultAgentCardDetailInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters"
+          },
+          "404": {
+            "description": "Agent not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "A2A Admin"
+        ],
+        "summary": "Update Agent Card",
+        "description": "Update existing agent card information",
+        "operationId": "updateAgentCard",
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "description": "Namespace ID of the agent",
+            "schema": {
+              "type": "string",
+              "default": "default"
+            }
+          },
+          {
+            "name": "agentName",
+            "in": "query",
+            "description": "Name of the agent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Version of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registrationType",
+            "in": "query",
+            "description": "Registration type (url or service)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "url",
+                "service"
+              ]
+            }
+          },
+          {
+            "name": "agentCard",
+            "in": "query",
+            "description": "JSON string containing the agent card specification",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "setAsLatest",
+            "in": "query",
+            "description": "Whether to set this version as the latest version",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent card updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultString"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters"
+          },
+          "404": {
+            "description": "Agent not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "A2A Admin"
+        ],
+        "summary": "Register Agent",
+        "description": "Register a new agent with agent card information",
+        "operationId": "registerAgent",
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "description": "Namespace ID of the agent",
+            "schema": {
+              "type": "string",
+              "default": "default"
+            }
+          },
+          {
+            "name": "agentName",
+            "in": "query",
+            "description": "Name of the agent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Version of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registrationType",
+            "in": "query",
+            "description": "Registration type (url or service)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "url",
+                "service"
+              ],
+              "default": "url"
+            }
+          },
+          {
+            "name": "agentCard",
+            "in": "query",
+            "description": "JSON string containing the agent card specification",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "{\"name\":\"my-agent\",\"version\":\"1.0.0\",\"description\":\"My AI agent\"}"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultString"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "A2A Admin"
+        ],
+        "summary": "Delete Agent",
+        "description": "Delete an agent by name and version",
+        "operationId": "deleteAgent",
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "description": "Namespace ID of the agent",
+            "schema": {
+              "type": "string",
+              "default": "default"
+            }
+          },
+          {
+            "name": "agentName",
+            "in": "query",
+            "description": "Name of the agent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Version of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registrationType",
+            "in": "query",
+            "description": "Registration type (url or service)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "url",
+                "service"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultString"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters"
+          },
+          "404": {
+            "description": "Agent not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/v3/admin/ai/a2a/list": {
+      "get": {
+        "tags": [
+          "A2A Admin"
+        ],
+        "summary": "List Agents",
+        "description": "List agents with pagination and optional search criteria",
+        "operationId": "listAgents",
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "description": "Namespace ID of the agent",
+            "schema": {
+              "type": "string",
+              "default": "default"
+            }
+          },
+          {
+            "name": "agentName",
+            "in": "query",
+            "description": "Name of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Search type - 'accurate' for exact match, 'blur' for fuzzy search",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "accurate",
+                "blur"
+              ],
+              "example": "accurate"
+            }
+          },
+          {
+            "name": "pageNo",
+            "in": "query",
+            "description": "Page number (starts from 1)",
+            "schema": {
+              "minimum": 1,
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "Number of items per page",
+            "schema": {
+              "maximum": 500,
+              "minimum": 1,
+              "type": "integer",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPageAgentCardVersionInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/v3/admin/ai/a2a/version/list": {
+      "get": {
+        "tags": [
+          "A2A Admin"
+        ],
+        "summary": "List Agent Versions",
+        "description": "List all versions for a specific agent",
+        "operationId": "listAgentVersions",
+        "parameters": [
+          {
+            "name": "namespaceId",
+            "in": "query",
+            "description": "Namespace ID of the agent",
+            "schema": {
+              "type": "string",
+              "default": "default"
+            }
+          },
+          {
+            "name": "agentName",
+            "in": "query",
+            "description": "Name of the agent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "description": "Version of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "registrationType",
+            "in": "query",
+            "description": "Registration type (url or service)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "url",
+                "service"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent versions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultListAgentVersionDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input parameters"
+          },
+          "404": {
+            "description": "Agent not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentCard": {
+        "type": "object",
+        "properties": {
+          "protocolVersion": {
+            "type": "string",
+            "description": "Protocol version"
+          },
+          "name": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Agent description"
+          },
+          "url": {
+            "type": "string",
+            "description": "Agent URL"
+          },
+          "preferredTransport": {
+            "type": "string",
+            "description": "Preferred transport protocol"
+          },
+          "additionalInterfaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentInterface"
+            },
+            "description": "Additional interfaces"
+          },
+          "iconUrl": {
+            "type": "string",
+            "description": "Icon URL"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/AgentProvider"
+          },
+          "version": {
+            "type": "string",
+            "description": "Agent version"
+          },
+          "documentationUrl": {
+            "type": "string",
+            "description": "Documentation URL"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/AgentCapabilities"
+          },
+          "securitySchemes": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/SecurityScheme"
+            },
+            "description": "Security schemes"
+          },
+          "security": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Security requirements"
+          },
+          "defaultInputModes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Default input modes"
+          },
+          "defaultOutputModes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Default output modes"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentSkill"
+            },
+            "description": "Agent skills"
+          },
+          "supportsAuthenticatedExtendedCard": {
+            "type": "boolean",
+            "description": "Whether supports authenticated extended card"
+          }
+        }
+      },
+      "AgentInterface": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Interface type"
+          },
+          "url": {
+            "type": "string",
+            "description": "Interface URL"
+          }
+        }
+      },
+      "AgentProvider": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Provider name"
+          },
+          "url": {
+            "type": "string",
+            "description": "Provider URL"
+          }
+        }
+      },
+      "AgentCapabilities": {
+        "type": "object",
+        "properties": {
+          "tools": {
+            "type": "boolean",
+            "description": "Whether supports tools"
+          },
+          "resources": {
+            "type": "boolean",
+            "description": "Whether supports resources"
+          },
+          "prompts": {
+            "type": "boolean",
+            "description": "Whether supports prompts"
+          }
+        }
+      },
+      "SecurityScheme": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Security scheme type"
+          },
+          "scheme": {
+            "type": "string",
+            "description": "Security scheme"
+          }
+        }
+      },
+      "AgentSkill": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Skill name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Skill description"
+          }
+        }
+      },
+      "AgentCardDetailInfo": {
+        "type": "object",
+        "properties": {
+          "agentCard": {
+            "$ref": "#/components/schemas/AgentCard"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            },
+            "description": "Metadata information"
+          }
+        }
+      },
+      "AgentCardVersionInfo": {
+        "type": "object",
+        "properties": {
+          "agentName": {
+            "type": "string",
+            "description": "Agent name"
+          },
+          "version": {
+            "type": "string",
+            "description": "Agent version"
+          },
+          "createdTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation time"
+          },
+          "updatedTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Update time"
+          }
+        }
+      },
+      "AgentVersionDetail": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Version number"
+          },
+          "isLatest": {
+            "type": "boolean",
+            "description": "Whether this is the latest version"
+          },
+          "createdTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation time"
+          },
+          "description": {
+            "type": "string",
+            "description": "Version description"
+          }
+        }
+      },
+      "Page": {
+        "type": "object",
+        "properties": {
+          "pageNumber": {
+            "type": "integer",
+            "description": "Current page number"
+          },
+          "pageSize": {
+            "type": "integer",
+            "description": "Page size"
+          },
+          "totalCount": {
+            "type": "integer",
+            "description": "Total count"
+          },
+          "pageItems": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Page items"
+          }
+        }
+      },
+      "ResultString": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Result code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Result message"
+          },
+          "data": {
+            "type": "string",
+            "description": "Result data"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful"
+          }
+        }
+      },
+      "ResultAgentCardDetailInfo": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Result code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Result message"
+          },
+          "data": {
+            "$ref": "#/components/schemas/AgentCardDetailInfo"
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful"
+          }
+        }
+      },
+      "ResultPageAgentCardVersionInfo": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Result code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Result message"
+          },
+          "data": {
+            "type": "object",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Page"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "pageItems": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/AgentCardVersionInfo"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful"
+          }
+        }
+      },
+      "ResultListAgentVersionDetail": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "description": "Result code"
+          },
+          "message": {
+            "type": "string",
+            "description": "Result message"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AgentVersionDetail"
+            }
+          },
+          "success": {
+            "type": "boolean",
+            "description": "Whether the operation was successful"
+          }
+        }
+      }
+    }
+  }
+}

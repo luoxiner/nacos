@@ -20,6 +20,7 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.exception.api.NacosApiException;
 import com.alibaba.nacos.api.model.v2.ErrorCode;
 import com.alibaba.nacos.common.utils.StringUtils;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serial;
 
@@ -31,11 +32,15 @@ import static com.alibaba.nacos.api.ai.constant.AiConstants.A2a.A2A_ENDPOINT_TYP
  *
  * @author xiweng.yy
  */
+@Schema(description = "Agent card form for registering an agent")
 public class AgentCardForm extends AgentForm {
     
     @Serial
     private static final long serialVersionUID = 8361628138801381818L;
     
+    @Schema(description = "JSON string containing the agent card specification", 
+            example = "{\"name\":\"my-agent\",\"version\":\"1.0.0\",\"description\":\"My AI agent\"}", 
+            required = true)
     private String agentCard;
     
     @Override

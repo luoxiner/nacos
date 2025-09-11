@@ -39,6 +39,13 @@ import com.alibaba.nacos.core.paramcheck.ExtractorManager;
 import com.alibaba.nacos.plugin.auth.constant.ActionTypes;
 import com.alibaba.nacos.plugin.auth.constant.ApiType;
 import com.alibaba.nacos.plugin.auth.constant.SignType;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +64,7 @@ import java.util.List;
 @RestController
 @RequestMapping(Constants.A2A.ADMIN_PATH)
 @ExtractorManager.Extractor(httpExtractor = AgentHttpParamExtractor.class)
+@Tag(name = "A2A Admin", description = "Agent-to-Agent Admin API for managing agents")
 public class A2aAdminController {
     
     private final A2aServerOperationService a2aServerOperationService;
@@ -74,7 +82,16 @@ public class A2aAdminController {
      */
     @PostMapping
     @Secured(action = ActionTypes.WRITE, signType = SignType.AI, apiType = ApiType.ADMIN_API)
-    public Result<String> registerAgent(AgentCardForm form) throws NacosException {
+    @Operation(summary = "Register Agent", description = "Register a new agent with agent card information")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Agent registered successfully",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public Result<String> registerAgent(
+            @Parameter(description = "Agent card form containing agent information", required = true)
+            AgentCardForm form) throws NacosException {
         form.validate();
         AgentCard agentCard = AgentRequestUtil.parseAgentCard(form);
         a2aServerOperationService.registerAgent(agentCard, form.getNamespaceId(), form.getRegistrationType());
@@ -90,7 +107,17 @@ public class A2aAdminController {
      */
     @GetMapping
     @Secured(action = ActionTypes.READ, signType = SignType.AI, apiType = ApiType.ADMIN_API)
-    public Result<AgentCardDetailInfo> getAgentCard(AgentForm form) throws NacosApiException {
+    @Operation(summary = "Get Agent Card", description = "Retrieve agent card information by name and version")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Agent card retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+            @ApiResponse(responseCode = "404", description = "Agent not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public Result<AgentCardDetailInfo> getAgentCard(
+            @Parameter(description = "Agent form containing agent name and optional version", required = true)
+            AgentForm form) throws NacosApiException {
         form.validate();
         return Result.success(
                 a2aServerOperationService.getAgentCard(form.getNamespaceId(), form.getAgentName(), form.getVersion(),
@@ -106,7 +133,17 @@ public class A2aAdminController {
      */
     @PutMapping
     @Secured(action = ActionTypes.WRITE, signType = SignType.AI, apiType = ApiType.ADMIN_API)
-    public Result<String> updateAgentCard(AgentCardUpdateForm form) throws NacosException {
+    @Operation(summary = "Update Agent Card", description = "Update existing agent card information")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Agent card updated successfully",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+            @ApiResponse(responseCode = "404", description = "Agent not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public Result<String> updateAgentCard(
+            @Parameter(description = "Agent card update form containing updated agent information", required = true)
+            AgentCardUpdateForm form) throws NacosException {
         form.validate();
         AgentCard agentCard = AgentRequestUtil.parseAgentCard(form);
         a2aServerOperationService.updateAgentCard(agentCard, form.getNamespaceId(), form.getRegistrationType(),
@@ -123,7 +160,17 @@ public class A2aAdminController {
      */
     @DeleteMapping
     @Secured(action = ActionTypes.WRITE, signType = SignType.AI, apiType = ApiType.ADMIN_API)
-    public Result<String> deleteAgent(AgentForm form) throws NacosException {
+    @Operation(summary = "Delete Agent", description = "Delete an agent by name and version")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Agent deleted successfully",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+            @ApiResponse(responseCode = "404", description = "Agent not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public Result<String> deleteAgent(
+            @Parameter(description = "Agent form containing agent name and version", required = true)
+            AgentForm form) throws NacosException {
         form.validate();
         a2aServerOperationService.deleteAgent(form.getNamespaceId(), form.getAgentName(), form.getVersion());
         return Result.success("ok");
@@ -139,8 +186,18 @@ public class A2aAdminController {
      */
     @GetMapping("/list")
     @Secured(action = ActionTypes.READ, signType = SignType.AI, apiType = ApiType.ADMIN_API)
-    public Result<Page<AgentCardVersionInfo>> listAgents(AgentListForm agentListForm, PageForm pageForm)
-            throws NacosException {
+    @Operation(summary = "List Agents", description = "List agents with pagination and optional search criteria")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Agent list retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public Result<Page<AgentCardVersionInfo>> listAgents(
+            @Parameter(description = "Agent list form with optional search criteria", required = true)
+            AgentListForm agentListForm, 
+            @Parameter(description = "Pagination form with page number and size", required = true)
+            PageForm pageForm) throws NacosException {
         agentListForm.validate();
         pageForm.validate();
         return Result.success(
@@ -157,7 +214,17 @@ public class A2aAdminController {
      */
     @GetMapping("/version/list")
     @Secured(action = ActionTypes.READ, signType = SignType.AI, apiType = ApiType.ADMIN_API)
-    public Result<List<AgentVersionDetail>> listAgentVersions(AgentForm agentForm) throws NacosException {
+    @Operation(summary = "List Agent Versions", description = "List all versions for a specific agent")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Agent versions retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = Result.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input parameters"),
+            @ApiResponse(responseCode = "404", description = "Agent not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public Result<List<AgentVersionDetail>> listAgentVersions(
+            @Parameter(description = "Agent form containing agent name", required = true)
+            AgentForm agentForm) throws NacosException {
         agentForm.validate();
         return Result.success(
                 a2aServerOperationService.listAgentVersions(agentForm.getNamespaceId(), agentForm.getAgentName()));
